@@ -1,0 +1,15 @@
+import axios from 'axios'
+
+const httpClient = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
+})
+
+httpClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('tiptop_token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
+export default httpClient
