@@ -41,7 +41,7 @@ const AdminCodesPage = () => {
   const handleCreate = async (event: FormEvent) => {
     event.preventDefault()
     if (!form.prizeId) {
-      setMessage('Sélectionne un lot pour créer un code.')
+      setMessage('Selectionne un lot pour creer un code.')
       return
     }
     setCreating(true)
@@ -53,10 +53,10 @@ const AdminCodesPage = () => {
         expirationDate: form.expirationDate ? new Date(form.expirationDate).toISOString() : undefined,
       })
       setForm({ code: '', prizeId: '', expirationDate: '' })
-      setMessage('Code créé avec succès.')
+      setMessage('Code cree avec succes.')
       await loadData()
     } catch (error) {
-      setMessage("Impossible de créer le code.")
+      setMessage("Impossible de creer le code.")
     } finally {
       setCreating(false)
     }
@@ -67,28 +67,39 @@ const AdminCodesPage = () => {
       await updateCodeStatus(codeId, status)
       setCodes((prev) => prev.map((code) => (code.id === codeId ? { ...code, status } : code)))
     } catch (error) {
-      setMessage('Erreur lors de la mise à jour du statut.')
+      setMessage('Erreur lors de la mise a jour du statut.')
     }
   }
 
   const formatDate = (value?: string) => {
-    if (!value) return '—'
+    if (!value) return '--'
     return new Date(value).toLocaleString('fr-FR', { dateStyle: 'medium', timeStyle: 'short' })
   }
 
   return (
     <div className="admin-codes-page">
       <div className="glass-card admin-section">
-        <h1 className="page-title">Créer un code</h1>
+        <h1 className="page-title">Creer un code</h1>
         <form className="code-form" onSubmit={handleCreate}>
           <label className="tt-input-group">
             <span className="tt-input-label">Code</span>
-            <input value={form.code} onChange={(e) => setForm((prev) => ({ ...prev, code: e.target.value }))} required />
+            <input
+              className="tt-input"
+              value={form.code}
+              onChange={(e) => setForm((prev) => ({ ...prev, code: e.target.value }))}
+              placeholder="Ex: TIPTOP-2024-001"
+              required
+            />
           </label>
           <label className="tt-input-group">
             <span className="tt-input-label">Lot</span>
-            <select value={form.prizeId} onChange={(e) => setForm((prev) => ({ ...prev, prizeId: e.target.value }))} required>
-              <option value="">Sélectionner</option>
+            <select
+              className="tt-input"
+              value={form.prizeId}
+              onChange={(e) => setForm((prev) => ({ ...prev, prizeId: e.target.value }))}
+              required
+            >
+              <option value="">Selectionner</option>
               {prizes.map((prize) => (
                 <option key={prize.id} value={prize.id}>
                   {prize.name}
@@ -100,12 +111,13 @@ const AdminCodesPage = () => {
             <span className="tt-input-label">Expiration (optionnel)</span>
             <input
               type="datetime-local"
+              className="tt-input"
               value={form.expirationDate}
               onChange={(e) => setForm((prev) => ({ ...prev, expirationDate: e.target.value }))}
             />
           </label>
           <Button type="submit" disabled={creating}>
-            {creating ? 'Création...' : 'Générer'}
+            {creating ? 'Creation...' : 'Generer'}
           </Button>
         </form>
         {message && <p className="status-message">{message}</p>}
@@ -124,14 +136,14 @@ const AdminCodesPage = () => {
                   <th>Lot</th>
                   <th>Statut</th>
                   <th>Expiration</th>
-                  <th>Créé le</th>
+                  <th>Cree le</th>
                 </tr>
               </thead>
               <tbody>
                 {codes.map((code) => (
                   <tr key={code.id}>
                     <td>{code.code}</td>
-                    <td>{code.prize?.name ?? '—'}</td>
+                    <td>{code.prize?.name ?? '--'}</td>
                     <td>
                       <select value={code.status} onChange={(e) => handleStatusChange(code.id, e.target.value)}>
                         {statusOptions.map((status) => (

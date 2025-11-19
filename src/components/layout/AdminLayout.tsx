@@ -18,8 +18,8 @@ const AdminLayout = () => {
         <div className="admin-brand">
           <img src="/images/logo-tiptop.png" alt="TipTop" />
           <div>
-            <span className="title">TipTop</span>
-            <p>Back Office</p>
+            <span className="title">Back Office</span>
+            <p>Admin</p>
           </div>
         </div>
         <nav className="admin-nav">
