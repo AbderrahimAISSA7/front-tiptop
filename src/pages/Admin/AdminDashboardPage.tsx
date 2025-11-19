@@ -23,15 +23,15 @@ const AdminDashboardPage = () => {
       <h1 className="page-title">Statistiques globales</h1>
       <div className="stats-grid">
         <div className="stat-card">
-          <span>Total codes</span>
+          <span>Total codes : </span>
           <strong>{stats.totalCodes}</strong>
         </div>
         <div className="stat-card">
-          <span>Codes utilisés</span>
+          <span>Codes utilisés : </span>
           <strong>{stats.usedCodes}</strong>
         </div>
         <div className="stat-card">
-          <span>Participation en cours</span>
+          <span>Participation en cours : </span>
           <strong>{stats.totalCodes - stats.usedCodes}</strong>
         </div>
       </div>
@@ -40,7 +40,7 @@ const AdminDashboardPage = () => {
         <ul className="distribution-list">
           {stats.prizeDistribution.map((item) => (
             <li key={item.prizeName}>
-              <span>{item.prizeName}</span>
+              <span>{item.prizeName} :</span>
               <strong>{item.count}</strong>
             </li>
           ))}

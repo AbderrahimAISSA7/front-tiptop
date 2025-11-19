@@ -1,18 +1,18 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
-import Button from '../../components/common/Button'
-import Input from '../../components/common/Input'
-import { subscribeNewsletter } from '../../api/newsletterApi'
+﻿import { useState } from "react"
+import type { FormEvent } from "react"
+import Button from "../../components/common/Button"
+import Input from "../../components/common/Input"
+import { subscribeNewsletter } from "../../api/newsletterApi"
 
 const prizes = [
   {
     title: 'Infuseur à thé',
-    description: 'L’accessoire parfait pour savourer nos mélanges bio.',
+    description: "L'accessoire parfait pour savourer nos mélanges bio.",
     image: '/images/prize-infuser.svg',
   },
   {
     title: 'Coffret découverte',
-    description: '3 produits exclusifs pour prolonger l’expérience.',
+    description: '3 produits exclusifs pour prolonger l\'expérience.',
     image: '/images/prize-box.svg',
   },
   {
@@ -25,7 +25,7 @@ const prizes = [
 const steps = [
   { title: 'Quand se termine le jeu ?', content: 'Le tirage aura lieu dans 30 jours. Retourne souvent tenter ta chance !' },
   { title: 'Créer un compte ?', content: 'Inscris-toi en quelques clics pour suivre tes participations et tes lots.' },
-  { title: 'Comment vérifier mon ticket ?', content: 'Saisis ton code dans l’espace “Entrer un code” pour révéler ton gain.' },
+  { title: 'Comment vérifier mon ticket ?', content: "Saisis ton code dans l'espace \"Entrer un code\" pour révéler ton gain." },
 ]
 
 const HomePage = () => {
@@ -37,7 +37,7 @@ const HomePage = () => {
     event.preventDefault()
     try {
       await subscribeNewsletter(email)
-      setStatus('Merci ! Nous t’avons ajouté à la newsletter.')
+      setStatus('Merci ! Nous t\'avons ajouté à la newsletter.')
       setEmail('')
     } catch (error) {
       setStatus("Impossible d'ajouter cet email pour le moment.")
@@ -51,13 +51,13 @@ const HomePage = () => {
           <p className="eyebrow">Jeu-Concours</p>
           <h1>Des lots à gagner</h1>
           <p className="subtitle">
-            Participe à l’ouverture de notre nouvelle boutique en jouant et en découvrant nos produits bio.
+            Participe à l'ouverture de notre nouvelle boutique en jouant et en découvrant nos produits bio.
           </p>
           <Button onClick={() => (window.location.href = '/register')}>Jouer</Button>
           <span className="hero-deadline">Fin du jeu dans 30 jours</span>
         </div>
         <div className="hero-visual">
-          <img src="/images/hero-leaf.svg" alt="feuilles décoratives" />
+          <img src="/images/hero-leaf.png" alt="feuilles décoratives" />
         </div>
       </section>
 
@@ -102,7 +102,7 @@ const HomePage = () => {
             onChange={(event) => setEmail(event.target.value)}
             required
           />
-          <Button type="submit">S’inscrire</Button>
+          <Button type="submit">S'inscrire</Button>
         </form>
         {status && <p className="status-message">{status}</p>}
       </section>

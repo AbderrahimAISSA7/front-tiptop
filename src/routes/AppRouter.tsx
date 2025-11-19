@@ -9,8 +9,14 @@ import ParticipationsPage from '../pages/User/ParticipationsPage'
 import ProfilePage from '../pages/User/ProfilePage'
 import AdminDashboardPage from '../pages/Admin/AdminDashboardPage'
 import AdminParticipantsPage from '../pages/Admin/AdminParticipantsPage'
+import AdminUsersPage from '../pages/Admin/AdminUsersPage'
+import AdminCodesPage from '../pages/Admin/AdminCodesPage'
 import NotFoundPage from '../pages/Error/NotFoundPage'
 import ProtectedRoute from '../components/common/ProtectedRoute'
+import RulesPage from '../pages/Rules/RulesPage'
+import ShopPage from '../pages/Shop/ShopPage'
+import ContactPage from '../pages/Contact/ContactPage'
+import AdminLayout from '../components/layout/AdminLayout'
 
 const AppRouter = () => {
   return (
@@ -19,6 +25,9 @@ const AppRouter = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/rules" element={<RulesPage />} />
+        <Route path="/shop" element={<ShopPage />} />
+        <Route path="/contact" element={<ContactPage />} />
 
         <Route
           path="/dashboard"
@@ -53,21 +62,19 @@ const AppRouter = () => {
           }
         />
         <Route
-          path="/admin"
+          path="/admin/*"
           element={
             <ProtectedRoute role="ADMIN">
-              <AdminDashboardPage />
+              <AdminLayout />
             </ProtectedRoute>
           }
-        />
-        <Route
-          path="/admin/participants"
-          element={
-            <ProtectedRoute role="ADMIN">
-              <AdminParticipantsPage />
-            </ProtectedRoute>
-          }
-        />
+        >
+          <Route index element={<AdminDashboardPage />} />
+          <Route path="dashboard" element={<AdminDashboardPage />} />
+          <Route path="participants" element={<AdminParticipantsPage />} />
+          <Route path="users" element={<AdminUsersPage />} />
+          <Route path="codes" element={<AdminCodesPage />} />
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </MainLayout>

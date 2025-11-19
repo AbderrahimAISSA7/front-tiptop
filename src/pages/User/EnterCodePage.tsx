@@ -20,7 +20,7 @@ const EnterCodePage = () => {
       setMessage(`Félicitations ! Lot: ${participation.prize?.name ?? 'à découvrir bientôt'}`)
       setCode('')
     } catch (err: any) {
-      setError(err?.response?.data?.message ?? 'Code invalide.')
+      setError(err?.response?.data?.message ?? ' Code invalide. ')
     } finally {
       setLoading(false)
     }

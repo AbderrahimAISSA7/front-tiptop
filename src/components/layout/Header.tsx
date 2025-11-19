@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 
 const navItems = [
   { to: '/', label: 'Accueil' },
-  { to: '/rules', label: 'Règlement' },
+  { to: '/rules', label: 'Réglement' },
   { to: '/shop', label: 'Boutique' },
   { to: '/contact', label: 'Contact' },
 ]
@@ -18,11 +18,13 @@ const Header = () => {
     navigate('/')
   }
 
+  const isAdmin = user?.role === 'ADMIN'
+
   return (
     <header className="tt-header">
       <Link className="tt-logo" to="/">
-        <img src="/images/logo.svg" alt="TipTop" />
-        <span>TipTop</span>
+        <img src="/images/logo-tiptop.png" alt="TipTop" />
+        <span>TheTipTop</span>
       </Link>
       <nav className="tt-nav">
         {navItems.map((item) => (
@@ -34,9 +36,16 @@ const Header = () => {
       <div className="tt-header-actions">
         {user ? (
           <>
-            <span className="tt-user-chip">
-              Bonjour, {user.firstName} {user.lastName}
-            </span>
+            <div className="tt-user-chip">
+              <span onClick={() => navigate('/dashboard')}>
+                Bonjour, {user.firstName} {user.lastName}
+              </span>
+            </div>
+            {isAdmin && (
+                  <Button variant="ghost" onClick={() => navigate('/admin/dashboard')}>
+                    Back office
+                  </Button>
+                )}
             <Button onClick={handleLogout} variant="ghost">
               Déconnexion
             </Button>
