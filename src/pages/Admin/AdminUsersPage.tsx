@@ -1,6 +1,8 @@
-﻿import { useEffect, useState } from "react"
-import { fetchAdminUsers, updateUserRole } from "../../api/adminApi"
-import type { AdminUser } from "../../types/admin"
+import { useEffect, useState } from 'react'
+import { deleteUser, fetchAdminUsers, updateUserRole } from '../../api/adminApi'
+import type { AdminUser } from '../../types/admin'
+import Button from '../../components/common/Button'
+import { trackEvent } from '../../lib/analytics'
 
 const roles: AdminUser['role'][] = ['USER', 'ADMIN']
 
@@ -9,6 +11,8 @@ const AdminUsersPage = () => {
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
   const [updatingId, setUpdatingId] = useState<number | null>(null)
+  const [confirmUser, setConfirmUser] = useState<AdminUser | null>(null)
+  const [deletingId, setDeletingId] = useState<number | null>(null)
 
   const loadUsers = async () => {
     setLoading(true)
@@ -29,12 +33,30 @@ const AdminUsersPage = () => {
     setMessage('')
     try {
       const updated = await updateUserRole(userId, role)
-      setUsers((prev) => prev.map((u) => (u.id === userId ? updated : u)))
-      setMessage('Rôle mis à jour.')
+      setUsers((prev) => prev.map((user) => (user.id === userId ? updated : user)))
+      setMessage('Role mis a jour.')
+      trackEvent('admin_user_role_changed', { userId, role })
     } catch (error) {
-      setMessage("Impossible de mettre à jour le rôle.")
+      setMessage('Impossible de mettre a jour le role.')
     } finally {
       setUpdatingId(null)
+    }
+  }
+
+  const handleDeleteUser = async () => {
+    if (!confirmUser) return
+    setDeletingId(confirmUser.id)
+    setMessage('')
+    try {
+      await deleteUser(confirmUser.id)
+      setUsers((prev) => prev.filter((user) => user.id !== confirmUser.id))
+      setMessage('Utilisateur supprime.')
+      trackEvent('admin_user_deleted', { userId: confirmUser.id })
+    } catch (error) {
+      setMessage("Impossible de supprimer l'utilisateur.")
+    } finally {
+      setDeletingId(null)
+      setConfirmUser(null)
     }
   }
 
@@ -57,7 +79,8 @@ const AdminUsersPage = () => {
               <tr>
                 <th>Nom</th>
                 <th>Email</th>
-                <th>Rôle</th>
+                <th>Role</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -80,6 +103,29 @@ const AdminUsersPage = () => {
                       ))}
                     </select>
                   </td>
+                  <td>
+                    <Button variant="danger" onClick={() => setConfirmUser(user)} disabled={deletingId === user.id}>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                        className="icon-inline"
+                      >
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        <line x1="10" y1="11" x2="10" y2="17" />
+                        <line x1="14" y1="11" x2="14" y2="17" />
+                      </svg>
+                      Supprimer
+                    </Button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -87,6 +133,25 @@ const AdminUsersPage = () => {
         </div>
       )}
       {message && <p className="status-message">{message}</p>}
+
+      {confirmUser && (
+        <div className="modal-backdrop">
+          <div className="modal-card">
+            <h3>Confirmer la suppression</h3>
+            <p className="muted">
+              Voulez-vous supprimer {confirmUser.firstName} {confirmUser.lastName} ?
+            </p>
+            <div className="modal-actions">
+              <Button variant="ghost" onClick={() => setConfirmUser(null)} disabled={deletingId !== null}>
+                Annuler
+              </Button>
+              <Button onClick={handleDeleteUser} disabled={deletingId !== null}>
+                {deletingId ? 'Suppression...' : 'Supprimer'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -30,6 +30,10 @@ export const updateUserRole = async (userId: number, role: string) => {
   return data
 }
 
+export const deleteUser = async (userId: number) => {
+  await httpClient.delete(`/api/admin/users/${userId}`)
+}
+
 export const fetchAdminCodes = async () => {
   const { data } = await httpClient.get<AdminCode[]>('/api/admin/codes')
   return data

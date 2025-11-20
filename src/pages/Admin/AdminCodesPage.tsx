@@ -8,6 +8,7 @@ import {
 } from '../../api/adminApi'
 import type { AdminCode, PrizeSummary } from '../../types/admin'
 import Button from '../../components/common/Button'
+import { trackEvent } from '../../lib/analytics'
 
 const statusOptions = ['NEW', 'USED', 'CLAIMED']
 
@@ -47,10 +48,16 @@ const AdminCodesPage = () => {
     setCreating(true)
     setMessage('')
     try {
-      await createCode({
+      const created = await createCode({
         code: form.code.trim(),
         prizeId: Number(form.prizeId),
         expirationDate: form.expirationDate ? new Date(form.expirationDate).toISOString() : undefined,
+      })
+      trackEvent('admin_code_created', {
+        prizeId: Number(form.prizeId),
+        prizeName: prizes.find((p) => p.id === Number(form.prizeId))?.name,
+        hasExpiration: Boolean(form.expirationDate),
+        codeId: created.id,
       })
       setForm({ code: '', prizeId: '', expirationDate: '' })
       setMessage('Code cree avec succes.')

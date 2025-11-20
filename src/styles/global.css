@@ -252,6 +252,12 @@ button {
   color: var(--color-primary);
 }
 
+.tt-btn-danger {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #dc2626;
+}
+
 .tt-btn-full {
   width: 100%;
 }
@@ -494,6 +500,39 @@ td {
 .chart-card h3 {
   margin-bottom: 1rem;
   color: var(--color-primary);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.modal-card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: var(--shadow-soft);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.icon-inline {
+  margin-right: 0.35rem;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .admin-section {

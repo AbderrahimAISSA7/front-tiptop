@@ -1,4 +1,5 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import MainLayout from '../components/layout/MainLayout'
 import HomePage from '../pages/Home/HomePage'
 import LoginPage from '../pages/Auth/LoginPage'
@@ -17,8 +18,15 @@ import RulesPage from '../pages/Rules/RulesPage'
 import ShopPage from '../pages/Shop/ShopPage'
 import ContactPage from '../pages/Contact/ContactPage'
 import AdminLayout from '../components/layout/AdminLayout'
+import { trackPageView } from '../lib/analytics'
 
 const AppRouter = () => {
+  const location = useLocation()
+
+  useEffect(() => {
+    trackPageView(location.pathname + location.search)
+  }, [location])
+
   return (
     <MainLayout>
       <Routes>
