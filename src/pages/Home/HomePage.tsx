@@ -5,6 +5,7 @@ import Button from '../../components/common/Button'
 import Input from '../../components/common/Input'
 import { subscribeNewsletter } from '../../api/newsletterApi'
 import { useAuth } from '../../context/AuthContext'
+import { trackEvent } from '../../lib/analytics'
 
 const prizes = [
   {
@@ -49,6 +50,10 @@ const HomePage = () => {
   }
 
   const handlePlay = () => {
+    trackEvent('click_cta', {
+      event_category: 'engagement',
+      event_label: 'bouton_jouer_accueil',
+    })
     navigate(user ? '/dashboard' : '/register')
   }
 

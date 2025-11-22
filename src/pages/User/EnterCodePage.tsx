@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
 import { submitCode } from '../../api/participationApi'
+import { trackEvent } from '../../lib/analytics'
 
 const EnterCodePage = () => {
   const [code, setCode] = useState('')
@@ -16,6 +17,10 @@ const EnterCodePage = () => {
     setMessage('')
     setError('')
     try {
+      trackEvent('use_ticket', {
+        event_category: 'game',
+        event_label: 'validation_code_ticket',
+      })
       const participation = await submitCode({ code })
       setMessage(`Félicitations ! Lot: ${participation.prize?.name ?? 'à découvrir bientôt'}`)
       setCode('')

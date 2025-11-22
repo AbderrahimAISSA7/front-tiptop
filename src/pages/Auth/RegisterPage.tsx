@@ -4,6 +4,7 @@ import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
 import { useAuth } from '../../context/AuthContext'
 import { useNavigate, Link } from 'react-router-dom'
+import { trackEvent } from '../../lib/analytics'
 
 const RegisterPage = () => {
   const { register } = useAuth()
@@ -22,6 +23,11 @@ const RegisterPage = () => {
     setLoading(true)
     try {
       await register(form)
+      trackEvent('generate_lead', {
+        event_category: 'formulaire',
+        event_label: 'inscription_jeu_concours',
+        value: 1,
+      })
       navigate('/dashboard')
     } catch (err) {
       setError("Impossible de créer le compte. Email déjà utilisé ?")
