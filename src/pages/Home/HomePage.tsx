@@ -1,8 +1,10 @@
-﻿import { useState } from "react"
-import type { FormEvent } from "react"
-import Button from "../../components/common/Button"
-import Input from "../../components/common/Input"
-import { subscribeNewsletter } from "../../api/newsletterApi"
+import { useState } from 'react'
+import type { FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Button from '../../components/common/Button'
+import Input from '../../components/common/Input'
+import { subscribeNewsletter } from '../../api/newsletterApi'
+import { useAuth } from '../../context/AuthContext'
 
 const prizes = [
   {
@@ -12,7 +14,7 @@ const prizes = [
   },
   {
     title: 'Coffret découverte',
-    description: '3 produits exclusifs pour prolonger l\'expérience.',
+    description: "3 produits exclusifs pour prolonger l'expérience.",
     image: '/images/prize-box.svg',
   },
   {
@@ -32,16 +34,22 @@ const HomePage = () => {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<string | null>(null)
   const [openIndex, setOpenIndex] = useState(0)
+  const navigate = useNavigate()
+  const { user } = useAuth()
 
   const handleNewsletter = async (event: FormEvent) => {
     event.preventDefault()
     try {
       await subscribeNewsletter(email)
-      setStatus('Merci ! Nous t\'avons ajouté à la newsletter.')
+      setStatus("Merci ! Nous t'avons ajouté à la newsletter.")
       setEmail('')
     } catch (error) {
       setStatus("Impossible d'ajouter cet email pour le moment.")
     }
+  }
+
+  const handlePlay = () => {
+    navigate(user ? '/dashboard' : '/register')
   }
 
   return (
@@ -53,7 +61,7 @@ const HomePage = () => {
           <p className="subtitle">
             Participe à l'ouverture de notre nouvelle boutique en jouant et en découvrant nos produits bio.
           </p>
-          <Button onClick={() => (window.location.href = '/register')}>Jouer</Button>
+          <Button onClick={handlePlay}>Jouer</Button>
           <span className="hero-deadline">Fin du jeu dans 30 jours</span>
         </div>
         <div className="hero-visual">

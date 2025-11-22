@@ -28,15 +28,15 @@ const ContactPage = () => {
           </p>
           <ul className="contact-infos">
             <li>
-              <strong>Email</strong>
+              <strong>Email : </strong>
               <span>hello@thetiptop.fr</span>
             </li>
             <li>
-              <strong>Téléphone</strong>
+              <strong>Téléphone : </strong>
               <span>+33 1 23 45 67 89</span>
             </li>
             <li>
-              <strong>Adresse</strong>
+              <strong>Adresse : </strong>
               <span>15 rue des Platanes, 06000 Nice</span>
             </li>
           </ul>
