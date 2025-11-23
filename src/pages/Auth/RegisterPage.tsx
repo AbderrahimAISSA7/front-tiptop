@@ -4,7 +4,7 @@ import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
 import { useAuth } from '../../context/AuthContext'
 import { useNavigate, Link } from 'react-router-dom'
-import { trackEvent } from '../../lib/analytics'
+import { initAnalytics, trackEvent } from '../../lib/analytics'
 
 const RegisterPage = () => {
   const { register } = useAuth()
@@ -12,6 +12,10 @@ const RegisterPage = () => {
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    initAnalytics()
+  }, [])
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }))
