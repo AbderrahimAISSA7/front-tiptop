@@ -3,13 +3,17 @@ import type { FormEvent } from 'react'
 import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
 import { submitCode } from '../../api/participationApi'
-import { trackEvent } from '../../lib/analytics'
+import { initAnalytics, trackEvent } from '../../lib/analytics'
 
 const EnterCodePage = () => {
   const [code, setCode] = useState('')
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    initAnalytics()
+  }, [])
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault()
