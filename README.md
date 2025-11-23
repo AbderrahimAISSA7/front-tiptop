@@ -1,73 +1,52 @@
-# React + TypeScript + Vite
+# Furious Ducks Workflow
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ce dépôt décrit et automatise l’infrastructure exigée par le sujet **Furious Ducks** : SCM Git, CI/CD Jenkins, registry privé, monitoring, sauvegardes, reverse proxy et environnements applicatifs TipTop (Dev / Préprod / Prod). Les dépôts applicatifs (`tiptop-front`, `tiptop-api`) restent séparés.
 
-Currently, two official plugins are available:
+## Objectifs
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Industrialiser la chaîne Gitflow → Jenkins → Docker registry → environnements multi-stacks.
+- Exposer chaque brique via un sous-domaine sécurisé (Traefik + Let’s Encrypt).
+- Collecter des métriques (Prometheus, Grafana) et automatiser les sauvegardes (Restic).
+- Produire la documentation demandée (architecture, processus de déploiement/sauvegarde).
 
-## React Compiler
+## Arborescence
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+.
+├── docs/                # Documentation technique & processus
+├── infra/               # Services du workflow (Traefik, Jenkins, Gitea, registry, monitoring, backups)
+├── app-envs/            # Docker Compose des environnements TipTop (dev / préprod / prod)
+├── scripts/             # Scripts utilitaires (deploy.sh appelé par Jenkins)
+├── examples/            # Jenkinsfile de référence front/back
+└── README.md
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Mise en route rapide
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Préparer deux domaines (site + workflow) avec les enregistrements DNS listés dans `docs/architecture.md`.
+2. Installer Docker Engine + Docker Compose plugin sur un ou plusieurs VPS Debian 12.
+3. Cloner ce dépôt (ex. `/opt/workflow/furious-ducks-workflow`) et créer les réseaux Docker :
+   ```bash
+   docker network create workflow_net
+   docker network create app_dev_net
+   docker network create app_preprod_net
+   docker network create app_prod_net
+   ```
+4. Pour chaque dossier `infra/*`, copier le `.env.example` en `.env`, ajuster les valeurs puis lancer `docker compose up -d`.
+5. Importer `tiptop-front` et `tiptop-api` dans Gitea, créer les pipelines Jenkins (en partant des `examples/`).
+6. Jenkins pousse les images dans le registry privé puis exécute `scripts/deploy.sh <env> <module>` pour mettre à jour `app-envs`.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Documentation
+
+- `docs/architecture.md` — vue d’ensemble des serveurs, réseaux Docker et DNS.
+- `docs/processus-deploiement.md` — pipeline Gitflow complet avec promotions Dev/Préprod/Prod.
+- `docs/processus-sauvegarde.md` — stratégie Restic + procédures de restauration.
+
+## Conformité aux exigences Furious Ducks
+
+- ✅ Workflow hébergé sur serveur(s) Linux, full Docker.
+- ✅ Jenkins + SCM Git (Gitea) + registry privé + monitoring (Prometheus/Grafana) + backups automatiques.
+- ✅ Gitflow + environnements Dev/Préprod/Prod + domaines dédiés.
+- ✅ Documentation opérationnelle prête pour la soutenance.
+
+Adapte les noms de domaine, adresses IP, secrets et tailles de machines selon ton contexte d’hébergement.
