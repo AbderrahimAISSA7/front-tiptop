@@ -5,7 +5,7 @@ import Button from '../../components/common/Button'
 import Input from '../../components/common/Input'
 import { subscribeNewsletter } from '../../api/newsletterApi'
 import { useAuth } from '../../context/AuthContext'
-import { trackEvent } from '../../lib/analytics'
+import { initAnalytics, trackEvent } from '../../lib/analytics'
 
 const prizes = [
   {
@@ -37,6 +37,10 @@ const HomePage = () => {
   const [openIndex, setOpenIndex] = useState(0)
   const navigate = useNavigate()
   const { user } = useAuth()
+
+  useEffect(() => {
+    initAnalytics()
+  }, [])
 
   const handleNewsletter = async (event: FormEvent) => {
     event.preventDefault()
