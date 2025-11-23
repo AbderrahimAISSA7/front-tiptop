@@ -5,7 +5,7 @@ declare global {
   }
 }
 
-const GA_ID = import.meta.env.VITE_GA_ID
+const GA_ID = 'G-9XV3S6CG9N'
 let isInitialized = false
 
 export const initAnalytics = () => {
