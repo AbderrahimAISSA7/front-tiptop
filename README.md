@@ -1,52 +1,66 @@
-# Furious Ducks Workflow
+# TipTop Frontend
 
-Ce dépôt décrit et automatise l’infrastructure exigée par le sujet **Furious Ducks** : SCM Git, CI/CD Jenkins, registry privé, monitoring, sauvegardes, reverse proxy et environnements applicatifs TipTop (Dev / Préprod / Prod). Les dépôts applicatifs (`tiptop-front`, `tiptop-api`) restent séparés.
+Interface utilisateur de TipTop, développée avec **React 18 + TypeScript + Vite**. Elle consomme l’API Spring Boot (`tiptop-api`) via l’endpoint configuré dans la variable `VITE_API_BASE_URL`.
 
-## Objectifs
+## Prérequis
 
-- Industrialiser la chaîne Gitflow → Jenkins → Docker registry → environnements multi-stacks.
-- Exposer chaque brique via un sous-domaine sécurisé (Traefik + Let’s Encrypt).
-- Collecter des métriques (Prometheus, Grafana) et automatiser les sauvegardes (Restic).
-- Produire la documentation demandée (architecture, processus de déploiement/sauvegarde).
+- Node.js 20+
+- npm 10+
 
-## Arborescence
+## Installation & scripts
 
-```
-.
-├── docs/                # Documentation technique & processus
-├── infra/               # Services du workflow (Traefik, Jenkins, Gitea, registry, monitoring, backups)
-├── app-envs/            # Docker Compose des environnements TipTop (dev / préprod / prod)
-├── scripts/             # Scripts utilitaires (deploy.sh appelé par Jenkins)
-├── examples/            # Jenkinsfile de référence front/back
-└── README.md
+```bash
+npm install          # installe les dépendances
+npm run dev          # démarre Vite sur http://localhost:5173
+npm run lint         # vérifie la qualité du code
+npm test             # exécute les tests React Testing Library
+npm run build        # build production (dossier dist/)
+npm run preview      # prévisualise le build
 ```
 
-## Mise en route rapide
+## Variables d’environnement
 
-1. Préparer deux domaines (site + workflow) avec les enregistrements DNS listés dans `docs/architecture.md`.
-2. Installer Docker Engine + Docker Compose plugin sur un ou plusieurs VPS Debian 12.
-3. Cloner ce dépôt (ex. `/opt/workflow/furious-ducks-workflow`) et créer les réseaux Docker :
-   ```bash
-   docker network create workflow_net
-   docker network create app_dev_net
-   docker network create app_preprod_net
-   docker network create app_prod_net
-   ```
-4. Pour chaque dossier `infra/*`, copier le `.env.example` en `.env`, ajuster les valeurs puis lancer `docker compose up -d`.
-5. Importer `tiptop-front` et `tiptop-api` dans Gitea, créer les pipelines Jenkins (en partant des `examples/`).
-6. Jenkins pousse les images dans le registry privé puis exécute `scripts/deploy.sh <env> <module>` pour mettre à jour `app-envs`.
+- `VITE_API_BASE_URL` : URL de l’API TipTop (dev par défaut `http://localhost:8080`).  
+  Définir dans `.env`, `.env.local` ou via `--build-arg` lors des builds Docker.
 
-## Documentation
+Exemple `.env.development` :
+```
+VITE_API_BASE_URL=http://localhost:8080
+```
 
-- `docs/architecture.md` — vue d’ensemble des serveurs, réseaux Docker et DNS.
-- `docs/processus-deploiement.md` — pipeline Gitflow complet avec promotions Dev/Préprod/Prod.
-- `docs/processus-sauvegarde.md` — stratégie Restic + procédures de restauration.
+## Docker
 
-## Conformité aux exigences Furious Ducks
+Une image multi-étapes est fournie (`Dockerfile`) :
 
-- ✅ Workflow hébergé sur serveur(s) Linux, full Docker.
-- ✅ Jenkins + SCM Git (Gitea) + registry privé + monitoring (Prometheus/Grafana) + backups automatiques.
-- ✅ Gitflow + environnements Dev/Préprod/Prod + domaines dédiés.
-- ✅ Documentation opérationnelle prête pour la soutenance.
+```bash
+docker build -t tiptop-front \
+  --build-arg VITE_API_BASE_URL=https://api.dev.tiptop.local \
+  .
 
-Adapte les noms de domaine, adresses IP, secrets et tailles de machines selon ton contexte d’hébergement.
+docker run -p 3000:80 tiptop-front
+```
+
+Le `docker-compose.yml` local attend la variable `APP_PORT` (port exposé) et transmet `VITE_API_BASE_URL`.
+
+## Structure notable
+
+- `src/components/` : layout, UI partagée (Header, AdminLayout…)
+- `src/pages/` : pages (Home, Shop, Contact, Auth/Register, Admin, User…)
+- `src/lib/analytics.ts` : intégrations analytiques
+- `public/` : assets statiques
+
+## CI/CD
+
+Les pipelines Jenkins (dans le dépôt workflow `references/Jenkinsfile-frontend`) exécutent :
+1. `npm ci`
+2. `npm run lint && npm test`
+3. `npm run build`
+4. `docker build / push` vers le registry workflow
+5. Déploiement via `scripts/deploy.sh` (dépôt workflow)
+
+## Contribuer
+
+1. Créer une branche `feature/<nom>`.
+2. Mettre à jour/ajouter tests si nécessaire.
+3. Vérifier `npm run lint` et `npm test`.
+4. Soumettre une PR dans Gitea (ou Git provider utilisé).
