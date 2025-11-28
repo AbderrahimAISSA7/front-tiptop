@@ -690,6 +690,38 @@ td {
   }
 }
 
+/* Responsive header/layout */
+@media (max-width: 768px) {
+  .tt-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+  }
+  .tt-nav {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .tt-header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 0.75rem;
+  }
+  .tt-user-chip {
+    min-width: unset;
+  }
+  .glass-card {
+    padding: 1.5rem;
+  }
+  .home {
+    padding: 1.5rem 1.5rem 3rem;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+  }
+}
+
 .tt-textarea {
   padding: 0.95rem 1.15rem;
   border-radius: 18px;
