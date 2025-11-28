@@ -62,7 +62,7 @@ const AdminCodesPage = () => {
       setForm({ code: '', prizeId: '', expirationDate: '' })
       setMessage('Code cree avec succes.')
       await loadData()
-    } catch (error) {
+    } catch {
       setMessage("Impossible de creer le code.")
     } finally {
       setCreating(false)
@@ -73,7 +73,7 @@ const AdminCodesPage = () => {
     try {
       await updateCodeStatus(codeId, status)
       setCodes((prev) => prev.map((code) => (code.id === codeId ? { ...code, status } : code)))
-    } catch (error) {
+    } catch {
       setMessage('Erreur lors de la mise a jour du statut.')
     }
   }

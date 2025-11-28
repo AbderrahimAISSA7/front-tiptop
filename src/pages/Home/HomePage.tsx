@@ -1,65 +1,65 @@
-import { useEffect, useState } from 'react'
-import type { FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Button from '../../components/common/Button'
-import Input from '../../components/common/Input'
-import { subscribeNewsletter } from '../../api/newsletterApi'
-import { useAuth } from '../../context/AuthContext'
-import { initAnalytics, trackEvent } from '../../lib/analytics'
+﻿import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import Button from "../../components/common/Button";
+import Input from "../../components/common/Input";
+import { subscribeNewsletter } from "../../api/newsletterApi";
+import { useAuth } from "../../context/AuthContext";
+import { initAnalytics, trackEvent } from "../../lib/analytics";
 
 const prizes = [
   {
-    title: 'Infuseur à thé',
+    title: "Infuseur à thé",
     description: "L'accessoire parfait pour savourer nos mélanges bio.",
-    image: '/images/prize-infuser.svg',
+    image: "/images/prize-infuser.svg",
   },
   {
-    title: 'Coffret découverte',
+    title: "Coffret découverte",
     description: "3 produits exclusifs pour prolonger l'expérience.",
-    image: '/images/prize-box.svg',
+    image: "/images/prize-box.svg",
   },
   {
-    title: 'Abonnement 1 an',
-    description: 'Recevez chaque mois une surprise TheTipTop.',
-    image: '/images/prize-subscription.svg',
+    title: "Abonnement 1 an",
+    description: "Recevez chaque mois une surprise TheTipTop.",
+    image: "/images/prize-subscription.svg",
   },
-]
+];
 
 const steps = [
-  { title: 'Quand se termine le jeu ?', content: 'Le tirage aura lieu dans 30 jours. Retourne souvent tenter ta chance !' },
-  { title: 'Créer un compte ?', content: 'Inscris-toi en quelques clics pour suivre tes participations et tes lots.' },
-  { title: 'Comment vérifier mon ticket ?', content: "Saisis ton code dans l'espace \"Entrer un code\" pour révéler ton gain." },
-]
+  { title: "Quand se termine le jeu ?", content: "Le tirage aura lieu dans 30 jours. Retourne souvent tenter ta chance !" },
+  { title: "Créer un compte ?", content: "Inscris-toi en quelques clics pour suivre tes participations et tes lots." },
+  { title: "Comment vérifier mon ticket ?", content: "Saisis ton code dans l'espace \"Entrer un code\" pour révéler ton gain." },
+];
 
 const HomePage = () => {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<string | null>(null)
-  const [openIndex, setOpenIndex] = useState(0)
-  const navigate = useNavigate()
-  const { user } = useAuth()
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<string | null>(null);
+  const [openIndex, setOpenIndex] = useState(0);
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
-    initAnalytics()
-  }, [])
+    initAnalytics();
+  }, []);
 
   const handleNewsletter = async (event: FormEvent) => {
-    event.preventDefault()
+    event.preventDefault();
     try {
-      await subscribeNewsletter(email)
-      setStatus("Merci ! Nous t'avons ajouté à la newsletter.")
-      setEmail('')
+      await subscribeNewsletter(email);
+      setStatus("Merci ! Nous t'avons ajouté à la newsletter.");
+      setEmail("");
     } catch (error) {
-      setStatus("Impossible d'ajouter cet email pour le moment.")
+      setStatus("Impossible d'ajouter cet email pour le moment.");
     }
-  }
+  };
 
   const handlePlay = () => {
-    trackEvent('click_cta', {
-      event_category: 'engagement',
-      event_label: 'bouton_jouer_accueil',
-    })
-    navigate(user ? '/dashboard' : '/register')
-  }
+    trackEvent("click_cta", {
+      event_category: "engagement",
+      event_label: "bouton_jouer_accueil",
+    });
+    navigate(user ? "/dashboard" : "/register");
+  };
 
   return (
     <div className="home">
@@ -98,7 +98,7 @@ const HomePage = () => {
             <div className="accordion-item" key={step.title}>
               <button className="accordion-trigger" onClick={() => setOpenIndex(index)}>
                 {step.title}
-                <span>{openIndex === index ? '-' : '+'}</span>
+                <span>{openIndex === index ? "-" : "+"}</span>
               </button>
               {openIndex === index && <p>{step.content}</p>}
             </div>
@@ -124,7 +124,7 @@ const HomePage = () => {
         {status && <p className="status-message">{status}</p>}
       </section>
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

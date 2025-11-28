@@ -5,3 +5,7 @@ export const fetchCurrentUser = async () => {
   const { data } = await httpClient.get<User>('/api/users/me')
   return data
 }
+
+export const deleteCurrentUser = async () => {
+  await httpClient.delete('/api/users/me')
+}

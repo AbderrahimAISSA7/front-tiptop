@@ -1,21 +1,21 @@
-﻿import { useState } from "react"
-import type { FormEvent } from "react"
-import Input from "../../components/common/Input"
-import Button from "../../components/common/Button"
+﻿import { useState } from "react";
+import type { FormEvent } from "react";
+import Input from "../../components/common/Input";
+import Button from "../../components/common/Button";
 
 const ContactPage = () => {
-  const [form, setForm] = useState({ name: '', email: '', message: '' })
-  const [status, setStatus] = useState('')
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState("");
 
   const handleChange = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }))
-  }
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = (event: FormEvent) => {
-    event.preventDefault()
-    setStatus('Merci ! Nous revenons vers vous très vite.')
-    setForm({ name: '', email: '', message: '' })
-  }
+    event.preventDefault();
+    setStatus("Merci ! Nous revenons vers vous très vite.");
+    setForm({ name: "", email: "", message: "" });
+  };
 
   return (
     <div className="contact-page glass-card">
@@ -24,7 +24,7 @@ const ContactPage = () => {
           <p className="eyebrow">Contact</p>
           <h1>On reste en contact</h1>
           <p className="muted">
-            Une question sur le jeu, un partenariat ou simplement envie de nous saluer ? L’équipe TheTipTop te répond sous 24h ouvrées.
+            Une question sur le jeu, un partenariat ou simplement envie de nous saluer ? L'équipe TheTipTop te répond sous 24h ouvrées.
           </p>
           <ul className="contact-infos">
             <li>
@@ -44,14 +44,14 @@ const ContactPage = () => {
         <img src="/images/contact-hero.svg" alt="contact tiptop" />
       </div>
       <form className="contact-form" onSubmit={handleSubmit}>
-        <Input label="Nom complet" value={form.name} onChange={(e) => handleChange('name', e.target.value)} required />
-        <Input label="Email" type="email" value={form.email} onChange={(e) => handleChange('email', e.target.value)} required />
+        <Input label="Nom complet" value={form.name} onChange={(e) => handleChange("name", e.target.value)} required />
+        <Input label="Email" type="email" value={form.email} onChange={(e) => handleChange("email", e.target.value)} required />
         <label className="tt-input-group">
           <span className="tt-input-label">Message</span>
           <textarea
             className="tt-textarea"
             value={form.message}
-            onChange={(e) => handleChange('message', e.target.value)}
+            onChange={(e) => handleChange("message", e.target.value)}
             rows={4}
             required
           />
@@ -60,7 +60,7 @@ const ContactPage = () => {
         {status && <p className="status-message">{status}</p>}
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default ContactPage
+export default ContactPage;

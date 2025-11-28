@@ -31,7 +31,7 @@ const AdminDashboardPage = () => {
         const [statsResponse, participantsResponse] = await Promise.all([fetchAdminStats(), fetchParticipants()])
         setStats(statsResponse)
         setParticipants(participantsResponse.content)
-      } catch (error) {
+      } catch {
         setStats(null)
         setParticipants([])
       }

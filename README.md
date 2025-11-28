@@ -1,66 +1,31 @@
-# TipTop Frontend
+# Workflow TipTop
 
-Interface utilisateur de TipTop, développée avec **React 18 + TypeScript + Vite**. Elle consomme l’API Spring Boot (`tiptop-api`) via l’endpoint configuré dans la variable `VITE_API_BASE_URL`.
+Plateforme CI/CD légère hébergeant Jenkins, Gitea, Prometheus, Grafana, un registre Docker privé et un service de backup.  
+Les services sont exposés via Nginx et pointent vers le domaine `*.dsp5-archi-f24a-15m-g4-2025-akf.fr`.
 
-## Prérequis
-
-- Node.js 20+
-- npm 10+
-
-## Installation & scripts
-
+## Déploiement
 ```bash
-npm install          # installe les dépendances
-npm run dev          # démarre Vite sur http://localhost:5173
-npm run lint         # vérifie la qualité du code
-npm test             # exécute les tests React Testing Library
-npm run build        # build production (dossier dist/)
-npm run preview      # prévisualise le build
+git clone https://github.com/AbderrahimAISSA7/workflow-tiptop.git
+cd workflow-tiptop/infra
+docker network create workflow_net 2>/dev/null
+docker compose -f infra/docker-compose.yml up -d --build
 ```
+Crée au préalable les dossiers `data/jenkins`, `data/gitea`, `data/gitea-db`, `data/prometheus`, `data/grafana`, `data/registry` et `backups`, puis donne-les à ton utilisateur (`chown -R $(id -u):$(id -g) data backups`).  
+Depuis ta VM, vérifie l’accès via `curl -H "Host: jenkins.dsp5-archi-f24a-15m-g4-2025-akf.fr" http://127.0.0.1 -I`.
 
-## Variables d’environnement
+## Services exposés
+- **Jenkins** : `http://jenkins.dsp5-archi-f24a-15m-g4-2025-akf.fr`
+- **Gitea** : `http://gitea.dsp5-archi-f24a-15m-g4-2025-akf.fr`
+- **Prometheus** : `http://prometheus.dsp5-archi-f24a-15m-g4-2025-akf.fr`
+- **Grafana** : `http://grafana.dsp5-archi-f24a-15m-g4-2025-akf.fr`
+- **Registry Docker** : `http://registry.dsp5-archi-f24a-15m-g4-2025-akf.fr` (proxy vers `registry:5000`)
 
-- `VITE_API_BASE_URL` : URL de l’API TipTop (dev par défaut `http://localhost:8080`).  
-  Définir dans `.env`, `.env.local` ou via `--build-arg` lors des builds Docker.
+Le registre stocke ses données dans `data/registry` et permet à Jenkins de pousser des images avec `docker login registry.dsp5-...`.
 
-Exemple `.env.development` :
-```
-VITE_API_BASE_URL=http://localhost:8080
-```
+## Fichiers importants
+- `infra/docker-compose.yml` — définition de toute la stack (Nginx, Jenkins, Gitea + Postgres, Registry, Prometheus, Grafana, backup, blackbox-exporter).
+- `infra/nginx/conf.d/default.conf` — virtual hosts pointant vers chaque service du réseau Docker.
+- `infra/monitoring/prometheus.yml` — jobs Prometheus (Prometheus/Jenkins/Gitea).
+- `infra/backup/` — image contenant le script de sauvegarde des dossiers `data/*`.
 
-## Docker
-
-Une image multi-étapes est fournie (`Dockerfile`) :
-
-```bash
-docker build -t tiptop-front \
-  --build-arg VITE_API_BASE_URL=https://api.dev.tiptop.local \
-  .
-
-docker run -p 3000:80 tiptop-front
-```
-
-Le `docker-compose.yml` local attend la variable `APP_PORT` (port exposé) et transmet `VITE_API_BASE_URL`.
-
-## Structure notable
-
-- `src/components/` : layout, UI partagée (Header, AdminLayout…)
-- `src/pages/` : pages (Home, Shop, Contact, Auth/Register, Admin, User…)
-- `src/lib/analytics.ts` : intégrations analytiques
-- `public/` : assets statiques
-
-## CI/CD
-
-Les pipelines Jenkins (dans le dépôt workflow `references/Jenkinsfile-frontend`) exécutent :
-1. `npm ci`
-2. `npm run lint && npm test`
-3. `npm run build`
-4. `docker build / push` vers le registry workflow
-5. Déploiement via `scripts/deploy.sh` (dépôt workflow)
-
-## Contribuer
-
-1. Créer une branche `feature/<nom>`.
-2. Mettre à jour/ajouter tests si nécessaire.
-3. Vérifier `npm run lint` et `npm test`.
-4. Soumettre une PR dans Gitea (ou Git provider utilisé).
+Adapte ces fichiers (domaines, mots de passe, jobs Prometheus) avant de lancer `docker compose` sur la VM. Ensuite configure Jenkins (pipelines front/back), crée tes dépôts Gitea et ajoute, si besoin, des webhooks pour déclencher les pipelines. Une fois le registre en place, Jenkins peut builder et pousser ses images sur `registry.dsp5-archi-f24a-15m-g4-2025-akf.fr/tiptop/<image>`.

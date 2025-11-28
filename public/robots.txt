@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://front.dsp5-archi-f24a-15m-g4-2025-akf.fr/sitemap.xml

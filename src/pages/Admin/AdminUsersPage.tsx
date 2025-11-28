@@ -36,7 +36,7 @@ const AdminUsersPage = () => {
       setUsers((prev) => prev.map((user) => (user.id === userId ? updated : user)))
       setMessage('Role mis a jour.')
       trackEvent('admin_user_role_changed', { userId, role })
-    } catch (error) {
+    } catch {
       setMessage('Impossible de mettre a jour le role.')
     } finally {
       setUpdatingId(null)
@@ -52,7 +52,7 @@ const AdminUsersPage = () => {
       setUsers((prev) => prev.filter((user) => user.id !== confirmUser.id))
       setMessage('Utilisateur supprime.')
       trackEvent('admin_user_deleted', { userId: confirmUser.id })
-    } catch (error) {
+    } catch {
       setMessage("Impossible de supprimer l'utilisateur.")
     } finally {
       setDeletingId(null)

@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import MainLayout from '../components/layout/MainLayout'
 import HomePage from '../pages/Home/HomePage'
@@ -7,7 +7,6 @@ import RegisterPage from '../pages/Auth/RegisterPage'
 import DashboardPage from '../pages/User/DashboardPage'
 import EnterCodePage from '../pages/User/EnterCodePage'
 import ParticipationsPage from '../pages/User/ParticipationsPage'
-import ProfilePage from '../pages/User/ProfilePage'
 import AdminDashboardPage from '../pages/Admin/AdminDashboardPage'
 import AdminParticipantsPage from '../pages/Admin/AdminParticipantsPage'
 import AdminUsersPage from '../pages/Admin/AdminUsersPage'
@@ -19,6 +18,7 @@ import ShopPage from '../pages/Shop/ShopPage'
 import ContactPage from '../pages/Contact/ContactPage'
 import AdminLayout from '../components/layout/AdminLayout'
 import { trackPageView } from '../lib/analytics'
+import SiteMapPage from '../pages/SiteMapPage'
 
 const AppRouter = () => {
   const location = useLocation()
@@ -36,6 +36,7 @@ const AppRouter = () => {
         <Route path="/rules" element={<RulesPage />} />
         <Route path="/shop" element={<ShopPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/plan-du-site" element={<SiteMapPage />} />
 
         <Route
           path="/dashboard"
@@ -65,7 +66,7 @@ const AppRouter = () => {
           path="/profile"
           element={
             <ProtectedRoute>
-              <ProfilePage />
+              <Navigate to="/dashboard" replace />
             </ProtectedRoute>
           }
         />
@@ -90,3 +91,4 @@ const AppRouter = () => {
 }
 
 export default AppRouter
+

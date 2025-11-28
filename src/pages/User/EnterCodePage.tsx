@@ -1,39 +1,39 @@
-import { useEffect, useState } from 'react'
-import type { FormEvent } from 'react'
-import Input from '../../components/common/Input'
-import Button from '../../components/common/Button'
-import { submitCode } from '../../api/participationApi'
-import { initAnalytics, trackEvent } from '../../lib/analytics'
+﻿import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
+import Input from "../../components/common/Input";
+import Button from "../../components/common/Button";
+import { submitCode } from "../../api/participationApi";
+import { initAnalytics, trackEvent } from "../../lib/analytics";
 
 const EnterCodePage = () => {
-  const [code, setCode] = useState('')
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [code, setCode] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    initAnalytics()
-  }, [])
+    initAnalytics();
+  }, []);
 
   const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault()
-    setLoading(true)
-    setMessage('')
-    setError('')
+    event.preventDefault();
+    setLoading(true);
+    setMessage("");
+    setError("");
     try {
-      trackEvent('use_ticket', {
-        event_category: 'game',
-        event_label: 'validation_code_ticket',
-      })
-      const participation = await submitCode({ code })
-      setMessage(`Félicitations ! Lot: ${participation.prize?.name ?? 'à découvrir bientôt'}`)
-      setCode('')
+      trackEvent("use_ticket", {
+        event_category: "game",
+        event_label: "validation_code_ticket",
+      });
+      const participation = await submitCode({ code });
+      setMessage(`Félicitations ! Lot: ${participation.prize?.name ?? 'à découvrir bientôt'}`);
+      setCode("");
     } catch (err: any) {
-      setError(err?.response?.data?.message ?? ' Code invalide. ')
+      setError(err?.response?.data?.message ?? " Code invalide. ");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="glass-card">
@@ -42,13 +42,13 @@ const EnterCodePage = () => {
       <form onSubmit={handleSubmit} className="enter-code-form">
         <Input value={code} onChange={(e) => setCode(e.target.value)} placeholder="ABC123DEF4" required />
         <Button type="submit" disabled={loading}>
-          {loading ? 'Validation...' : 'Valider mon code'}
+          {loading ? "Validation..." : "Valider mon code"}
         </Button>
       </form>
       {message && <p className="success-text">{message}</p>}
       {error && <p className="error-text">{error}</p>}
     </div>
-  )
-}
+  );
+};
 
-export default EnterCodePage
+export default EnterCodePage;
