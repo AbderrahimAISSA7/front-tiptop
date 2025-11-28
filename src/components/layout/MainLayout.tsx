@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import Header from './Header'
 import Footer from './Footer'
+import CookieBanner from '../common/CookieBanner'
 
 const MainLayout = ({ children }: { children: ReactNode }) => {
   return (
@@ -8,6 +9,7 @@ const MainLayout = ({ children }: { children: ReactNode }) => {
       <Header />
       <main className="app-content">{children}</main>
       <Footer />
+      <CookieBanner />
     </div>
   )
 }

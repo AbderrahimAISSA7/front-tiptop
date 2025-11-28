@@ -40,7 +40,7 @@ const DashboardPage = () => {
             <ul className="participation-list">
               {participations.slice(0, 3).map((participation) => (
                 <li key={participation.id}>
-                  <span>{participation.code.code}</span>
+                  <span>Code : {participation.code.code} - </span>
                   <span>{participation.prize?.name ?? "Tirage en cours"}</span>
                 </li>
               ))}
